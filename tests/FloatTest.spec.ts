@@ -40,7 +40,7 @@ describe('FloatTest', () => {
     });
 
     it('should not increase counter when overflow', async () => {
-        let increaseBy = 255n;
+        let increaseBy = 256n;
         const increaseReultBefore = await floatTest.getGetCounter();
         //console.log("increaseReultBefore ",increaseReultBefore);
         const increaseResult = await floatTest.send(
@@ -56,7 +56,7 @@ describe('FloatTest', () => {
         const increaseReultAfter = await floatTest.getGetCounter();
         //console.log("increaseReultAfter ",increaseReultAfter);
 
-        // increaseBy is 258 and the counter is 1, 1 * 258 >= 255 so it should fail
+        // increaseBy is 258 and the counter is 1, 1 * 258 > 255 so it should fail
         expect(increaseResult.transactions).toHaveTransaction({
             from: deployer.address,
             to: floatTest.address,
