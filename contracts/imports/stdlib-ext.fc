@@ -1,0 +1,1 @@
+int check_fits_u8(int) asm "7 UFITS";
