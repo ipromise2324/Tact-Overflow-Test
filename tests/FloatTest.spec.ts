@@ -251,7 +251,7 @@ describe('FloatTest', () => {
         });
         const divAmount = 3.33;
         const divBy = toNano(divAmount); // 15 00000000
-        const divReultBefore = await floatTest.getGetMoney();
+        const divReultBefore = await floatTest.getGetCounter();
         console.log("divReultBefore ",divReultBefore);
         const divResult = await floatTest.send(
             deployer.getSender(),
@@ -268,7 +268,7 @@ describe('FloatTest', () => {
             to: floatTest.address,
             success: true,
         });
-        const divReultAfter = await floatTest.getGetMoney();
+        const divReultAfter = await floatTest.getGetCounter();
         console.log("divReultAfter ",divReultAfter);
         let tmpResult: string = (setAmount / divAmount).toFixed(9);
         let divAns: number = parseFloat(tmpResult); 

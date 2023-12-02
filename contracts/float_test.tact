@@ -38,10 +38,8 @@ message Set {
 contract FloatTest with Deployable {
     const FP100: Int = pow(10, 9);
     counter: Int as coins;
-    money: Int as coins;
     init() {
         self.counter = 1;
-        self.money = 0;
     }
 
     receive(msg: Mul) {
@@ -49,7 +47,7 @@ contract FloatTest with Deployable {
     }
 
     receive(msg: Div) {
-        self.money = self.money.safe_div(self.FP100, msg.amount);
+        self.counter = self.counter.safe_div(self.FP100, msg.amount);
     }
 
     receive(msg: Add) {
@@ -61,16 +59,11 @@ contract FloatTest with Deployable {
     }
 
     receive(msg: Set) {
-        self.money = msg.amount;
         self.counter = msg.amount;
     }
 
     get fun getCounter(): Int {
         return self.counter;
-    }
-
-    get fun getMoney(): Int {
-        return self.money;
     }
 
 }
