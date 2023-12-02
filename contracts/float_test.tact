@@ -10,11 +10,11 @@ extends native add(self: Int, y: Int): Int;
 @name(sub)
 extends native sub(self: Int, y: Int): Int;
 
-@name(mul)
-extends native mul(self: Int, y: Int): Int;
+@name(safe_mul)
+extends native safe_mul(self: Int, y: Int, z: Int): Int;
 
-@name(mul_div)
-extends native mul_div(self: Int, y: Int, z: Int): Int;
+@name(safe_div)
+extends native safe_div(self: Int, y: Int, z: Int): Int;
 
 message Mul {
     amount: Int;
@@ -37,7 +37,7 @@ message Set {
 }
 contract FloatTest with Deployable {
     const FP100: Int = pow(10, 9);
-    counter: Int as uint8;
+    counter: Int as coins;
     money: Int as coins;
     init() {
         self.counter = 1;
@@ -45,11 +45,11 @@ contract FloatTest with Deployable {
     }
 
     receive(msg: Mul) {
-        self.counter = self.counter.mul(msg.amount); 
+        self.counter = self.counter.safe_mul(msg.amount, self.FP100); 
     }
 
     receive(msg: Div) {
-        self.money = self.money.mul_div(self.FP100, msg.amount);
+        self.money = self.money.safe_div(self.FP100, msg.amount);
     }
 
     receive(msg: Add) {
@@ -62,14 +62,7 @@ contract FloatTest with Deployable {
 
     receive(msg: Set) {
         self.money = msg.amount;
-    }
-
-    fun encode(x: Int): Int {
-        return x * self.FP100;
-    }
-
-    fun div(encodeX: Int, y: Int): Int {
-        return encodeX / y;
+        self.counter = msg.amount;
     }
 
     get fun getCounter(): Int {

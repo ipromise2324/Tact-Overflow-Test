@@ -40,10 +40,21 @@ describe('FloatTest', () => {
     });
 
     it('should add successfully', async () => {
-
+        const setAmount = 1200;
+        const setResult = await floatTest.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.05'),
+            },
+            {
+                $$type: 'Set',
+                amount: toNano(setAmount),
+            }
+        );
         const counterBefore = await floatTest.getGetCounter();
-        //console.log('counterBefore', counterBefore);
-        let increaseBy = 25n;
+        //console.log('...counterBefore', counterBefore);
+        let increaseBy = 2.5;
+        const increasAmount = toNano(increaseBy);
         const increaseResult = await floatTest.send(
             deployer.getSender(),
             {
@@ -51,12 +62,12 @@ describe('FloatTest', () => {
             },
             {
                 $$type: 'Add',
-                amount: increaseBy,
+                amount: increasAmount,
             }
         );
 
         const counterAfter = await floatTest.getGetCounter();
-        //console.log('counterAfter', counterAfter);
+        //console.log('...counterAfter', counterAfter);
         // increaseBy is 255 and the counter is 1, 1 + 255 > 255 so it should fail
         expect(increaseResult.transactions).toHaveTransaction({
             from: deployer.address,
@@ -64,7 +75,7 @@ describe('FloatTest', () => {
             success: true,
         });
 
-        expect(counterAfter).toEqual(counterBefore + increaseBy);
+        expect(counterAfter).toEqual(counterBefore + increasAmount);
     });
 
 
@@ -72,7 +83,7 @@ describe('FloatTest', () => {
 
         const counterBefore = await floatTest.getGetCounter();
         //console.log('counterBefore', counterBefore);
-        let increaseBy = 255n;
+        let increaseBy = 2n**240n;
         const increaseResult = await floatTest.send(
             deployer.getSender(),
             {
@@ -93,35 +104,6 @@ describe('FloatTest', () => {
             success: false,
         });
     });
-
-    it('should add successfully', async () => {
-
-        const counterBefore = await floatTest.getGetCounter();
-        // console.log('counterBefore', counterBefore);
-        let increaseBy = 25n;
-        const increaseResult = await floatTest.send(
-            deployer.getSender(),
-            {
-                value: toNano('0.05'),
-            },
-            {
-                $$type: 'Add',
-                amount: increaseBy,
-            }
-        );
-
-        const counterAfter = await floatTest.getGetCounter();
-        // console.log('counterAfter', counterAfter);
-        // increaseBy is 255 and the counter is 1, 1 + 255 > 255 so it should fail
-        expect(increaseResult.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: floatTest.address,
-            success: true,
-        });
-
-        expect(counterAfter).toEqual(counterBefore + increaseBy);
-    });
-
 
     it('should sub and detect underflow', async () => {
 
@@ -151,10 +133,21 @@ describe('FloatTest', () => {
     });
 
     it('should sub and detect underflow', async () => {
-
+        const setAmount = 1200;
+        const setResult = await floatTest.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.05'),
+            },
+            {
+                $$type: 'Set',
+                amount: toNano(setAmount),
+            }
+        );
         const counterBefore = await floatTest.getGetCounter();
-        //console.log('counterBefore', counterBefore);
-        let decreaseBy = 1n;
+        //console.log('...counterBefore', counterBefore);
+        let decreaseBy = 2.5;
+        const increasAmount = toNano(decreaseBy);
         const decreaseResult = await floatTest.send(
             deployer.getSender(),
             {
@@ -162,24 +155,24 @@ describe('FloatTest', () => {
             },
             {
                 $$type: 'Sub',
-                amount: decreaseBy,
+                amount: increasAmount,
             }
         );
 
         const counterAfter = await floatTest.getGetCounter();
-        //console.log('counterAfter', counterAfter);
-        // decreaseBy is 10 and the counter is 1, 1 - 10 < 0, so it should fail
+        //console.log('...counterAfter', counterAfter);
+        // decreaseBy is 255 and the counter is 1, 1 + 255 > 255 so it should fail
         expect(decreaseResult.transactions).toHaveTransaction({
             from: deployer.address,
             to: floatTest.address,
             success: true,
         });
 
-        expect(counterAfter).toEqual(counterBefore - decreaseBy);
+        expect(counterAfter).toEqual(counterBefore - increasAmount);
     });
 
     it('should mul and detect oversflow', async () => {
-        let increaseBy = 256n;
+        let increaseBy = 2n**240n;
         const increaseResult = await floatTest.send(
             deployer.getSender(),
             {
@@ -200,30 +193,43 @@ describe('FloatTest', () => {
     });
 
     it('should mul successfully', async () => {
-        let increaseBy = 25n;
-        const increaseReultBefore = await floatTest.getGetCounter();
-        //console.log("increaseReultBefore ",increaseReultBefore);
-        const increaseResult = await floatTest.send(
+        const setAmount = 1200;
+        const setResult = await floatTest.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.05'),
+            },
+            {
+                $$type: 'Set',
+                amount: toNano(setAmount),
+            }
+        );
+        const counterBefore = await floatTest.getGetCounter();
+        let mulBy = 2.22;
+        let mulAmount = toNano(mulBy);
+        const mulReultBefore = await floatTest.getGetCounter();
+        //console.log("mulReultBefore ",mulReultBefore);
+        const mulResult = await floatTest.send(
             deployer.getSender(),
             {
                 value: toNano('0.05'),
             },
             {
                 $$type: 'Mul',
-                amount: increaseBy,
+                amount: mulAmount,
             }
         );
-        const increaseReultAfter = await floatTest.getGetCounter();
-        //console.log("increaseReultAfter ",increaseReultAfter);
+        const mulReultAfter = await floatTest.getGetCounter();
+        //console.log("mulReultAfter ",mulReultAfter);
 
-        // increaseBy is 25 and the counter is 1, 1 * 25 < 255 so it should pass
-        expect(increaseResult.transactions).toHaveTransaction({
+        // mulBy is 25 and the counter is 1, 1 * 25 < 255 so it should pass
+        expect(mulResult.transactions).toHaveTransaction({
             from: deployer.address,
             to: floatTest.address,
             success: true,
         });
 
-        expect(increaseReultAfter).toEqual(increaseReultBefore * increaseBy);
+        expect(mulReultAfter).toEqual(mulReultBefore * mulAmount / 1000000000n);
     });
 
     it('should div successfully', async () => {
