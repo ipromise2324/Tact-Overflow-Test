@@ -7,7 +7,7 @@ message Mul {
     amount: Int;
 }
 
-contract FloatTest with Deployable {
+contract OverflowTest2 with Deployable {
     counter: Int as uint8;
 
     init() {

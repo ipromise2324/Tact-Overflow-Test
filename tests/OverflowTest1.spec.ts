@@ -1,21 +1,21 @@
 import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
 import { toNano } from '@ton/core';
-import { FloatTest } from '../wrappers/FloatTest';
+import { OverflowTest1 } from '../wrappers/OverflowTest1';
 import '@ton/test-utils';
 
-describe('FloatTest', () => {
+describe('OverflowTest1', () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
-    let floatTest: SandboxContract<FloatTest>;
+    let overflowTest1: SandboxContract<OverflowTest1>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
 
-        floatTest = blockchain.openContract(await FloatTest.fromInit());
+        overflowTest1 = blockchain.openContract(await OverflowTest1.fromInit());
 
         deployer = await blockchain.treasury('deployer');
 
-        const deployResult = await floatTest.send(
+        const deployResult = await overflowTest1.send(
             deployer.getSender(),
             {
                 value: toNano('0.05'),
@@ -28,7 +28,7 @@ describe('FloatTest', () => {
 
         expect(deployResult.transactions).toHaveTransaction({
             from: deployer.address,
-            to: floatTest.address,
+            to: overflowTest1.address,
             deploy: true,
             success: true,
         });
@@ -36,12 +36,12 @@ describe('FloatTest', () => {
 
     it('should deploy', async () => {
         // the check is done inside beforeEach
-        // blockchain and floatTest are ready to use
+        // blockchain and overflowTest1 are ready to use
     });
 
     it('should not increase counter when overflow', async () => {
-        let increaseBy = 128n;
-        const increaseResult = await floatTest.send(
+        let increaseBy = 256n;
+        const increaseResult = await overflowTest1.send(
             deployer.getSender(),
             {
                 value: toNano('0.05'),
@@ -52,19 +52,19 @@ describe('FloatTest', () => {
             }
         );
 
-        // increaseBy is 128 and the counter is 1, 1 * 128 > 127 so it should fail
+        // increaseBy is 256 and the counter is 1, 1 * 256 > 255 so it should fail
         expect(increaseResult.transactions).toHaveTransaction({
             from: deployer.address,
-            to: floatTest.address,
+            to: overflowTest1.address,
             success: false,
         });
     });
 
     it('should increase counter', async () => {
         let increaseBy = 25n;
-        const increaseReultBefore = await floatTest.getGetCounter();
+        const increaseReultBefore = await overflowTest1.getGetCounter();
         //console.log("increaseReultBefore ",increaseReultBefore);
-        const increaseResult = await floatTest.send(
+        const increaseResult = await overflowTest1.send(
             deployer.getSender(),
             {
                 value: toNano('0.05'),
@@ -74,15 +74,14 @@ describe('FloatTest', () => {
                 amount: increaseBy,
             }
         );
-        const increaseReultAfter = await floatTest.getGetCounter();
+        const increaseReultAfter = await overflowTest1.getGetCounter();
         //console.log("increaseReultAfter ",increaseReultAfter);
 
         // increaseBy is 25 and the counter is 1, 1 * 25 < 255 so it should pass
         expect(increaseResult.transactions).toHaveTransaction({
             from: deployer.address,
-            to: floatTest.address,
+            to: overflowTest1.address,
             success: true,
         });
     });
-
 });
