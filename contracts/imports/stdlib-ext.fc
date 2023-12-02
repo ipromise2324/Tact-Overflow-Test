@@ -1,1 +1,5 @@
 int check_fits_u7(int) asm "7 UFITS";
+int add(int x,int y) asm "ADD";
+int sub(int x,int y) asm "SUB";
+int mul(int x,int y) asm "MUL";
+int mul_div(int x,int y, int z) asm "MULDIV";
